@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-type Pick = { symbol: string; name: string; price: number; changePct: number; change: number; volume?: number; datetime?: string; currency?: string; score?: number; demo?: boolean };
+type Pick = { symbol: string; name: string; price: number; changePct: number; change: number; volume?: number; datetime?: string; currency?: string; score?: number; demo?: boolean; pnl?: number; entryPrice?: number; currentPrice?: number; pnlPct?: number };
 type Day = { date: string; picks: Pick[]; settled: boolean; closedAt?: string };
 const DEMO: Pick[] = [
   {symbol:"NVDA",name:"NVIDIA",price:188.42,changePct:2.34,change:4.31,demo:true},
@@ -60,7 +60,7 @@ export default function App() {
       const response = await fetch("/api/analyze");
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Could not refresh live quotes.");
-      const latest = new Map<string,Pick>((data.picks as Pick[]).map(p=>[p.symbol,p]));
+      const latest = new Map<string,Pick>((data.quotes as Pick[]).map(p=>[p.symbol,p]));
       const existing = days.find(d=>d.date===today);
       if (!existing) throw new Error("Save today's five picks first.");
       const scored = existing.picks.map(p=>{
