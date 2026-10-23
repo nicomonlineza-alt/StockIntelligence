@@ -31,7 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // This is a research heuristic, not a promise or a trained predictive model.
     const ranked = valid.map(q => ({ ...q, score: q.changePct + (q.volume > 0 ? Math.min(Math.log10(q.volume) - 5, 1) * 0.15 : 0) }))
       .sort((a, b) => b.score - a.score);
-    return res.status(200).json({ picks: ranked.slice(0, 5), universeSize: valid.length, asOf: new Date().toISOString(), method: "Daily percentage momentum with a small volume/liquidity adjustment", disclaimer: "Research simulation only. Positive momentum can reverse; this does not guarantee profit." });
+    return res.status(200).json({ picks: ranked.slice(0, 5), quotes: valid, universeSize: valid.length, asOf: new Date().toISOString(), method: "Daily percentage momentum with a small volume/liquidity adjustment", disclaimer: "Research simulation only. Positive momentum can reverse; this does not guarantee profit." });
   } catch {
     return res.status(502).json({ error: "Could not reach Twelve Data. Please try again shortly." });
   }
